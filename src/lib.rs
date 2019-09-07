@@ -142,7 +142,8 @@ pub fn get_resource_limit(resource: Resource) -> Result<ResourceLimits, GetRLimi
 /// An error value returned from the failure of ['set_resource_limit'].
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum SetRLimitError {
-    /// [EINVAL] The limit specified cannot be lowered because current usage is already higher than the limit.
+    /// [EINVAL] The limit specified cannot be lowered because current usage is
+    /// already higher than the limit.
     Invalid,
 }
 
