@@ -105,6 +105,7 @@ impl From<libc::__rlimit_resource_t> for Resource {
     }
 }
 
+/// An error value returned from the failure of ['get_resource_limit'].
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum GetRLimitError {
     /// [EINVAL] An invalid resource was specified; or in a setrlimit() call,
@@ -116,10 +117,7 @@ pub enum GetRLimitError {
     Permission,
 }
 
-// pub unsafe extern "C" fn getrlimit(
-//     resource: __rlimit_resource_t,
-//     rlim: *mut rlimit
-// ) -> c_int
+/// Get the limit values for a particular resource.
 pub fn get_resource_limit(resource: Resource) -> Result<ResourceLimits, GetRLimitError> {
     let mut rlimit: libc::rlimit = libc::rlimit {
         rlim_cur: 0_u64,
@@ -141,15 +139,14 @@ pub fn get_resource_limit(resource: Resource) -> Result<ResourceLimits, GetRLimi
     }
 }
 
+/// An error value returned from the failure of ['set_resource_limit'].
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum SetRLimitError {
     /// [EINVAL] The limit specified cannot be lowered because current usage is already higher than the limit.
     Invalid,
 }
-// pub unsafe extern "C" fn setrlimit(
-//     resource: __rlimit_resource_t,
-//     rlim: *const rlimit
-// ) -> c_int
+
+/// Set the limit values for a particular resource.
 pub fn set_resource_limit(
     resource: Resource,
     r_limit: ResourceLimits,
