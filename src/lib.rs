@@ -1,13 +1,13 @@
 use libc;
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum ResourceLimit {
     ResourceLimitInfinity,
     ResourceLimitUnknown,
     ResourceLimit(u64),
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct ResourceLimits {
     pub soft_limit: ResourceLimit,
     pub hard_limit: ResourceLimit,
@@ -105,7 +105,7 @@ impl From<libc::__rlimit_resource_t> for Resource {
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum GetRLimitError {
     /// [EINVAL] An invalid resource was specified; or in a setrlimit() call,
     /// the new rlim_cur exceeds the new rlim_max.
@@ -141,7 +141,7 @@ pub fn get_resource_limit(resource: Resource) -> Result<ResourceLimits, GetRLimi
     }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum SetRLimitError {
     /// [EINVAL] The limit specified cannot be lowered because current usage is already higher than the limit.
     Invalid,
