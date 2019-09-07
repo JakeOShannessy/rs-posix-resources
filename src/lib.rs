@@ -2,9 +2,9 @@ use libc;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum ResourceLimit {
-    ResourceLimitInfinity,
-    ResourceLimitUnknown,
-    ResourceLimit(u64),
+    Infinity,
+    Unknown,
+    Value(u64),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
@@ -16,30 +16,30 @@ pub struct ResourceLimits {
 impl From<libc::rlimit> for ResourceLimits {
     fn from(rs: libc::rlimit) -> Self {
         let soft_limit = match rs.rlim_cur {
-            libc::RLIM_INFINITY => ResourceLimit::ResourceLimitInfinity,
+            libc::RLIM_INFINITY => ResourceLimit::Infinity,
             other => {
                 if libc::RLIM_SAVED_MAX != libc::RLIM_INFINITY && other == libc::RLIM_SAVED_MAX {
-                    ResourceLimit::ResourceLimitUnknown
+                    ResourceLimit::Unknown
                 } else if libc::RLIM_SAVED_CUR != libc::RLIM_INFINITY
                     && other == libc::RLIM_SAVED_CUR
                 {
-                    ResourceLimit::ResourceLimitUnknown
+                    ResourceLimit::Unknown
                 } else {
-                    ResourceLimit::ResourceLimit(other)
+                    ResourceLimit::Value(other)
                 }
             }
         };
         let hard_limit = match rs.rlim_max {
-            libc::RLIM_INFINITY => ResourceLimit::ResourceLimitInfinity,
+            libc::RLIM_INFINITY => ResourceLimit::Infinity,
             other => {
                 if libc::RLIM_SAVED_MAX != libc::RLIM_INFINITY && other == libc::RLIM_SAVED_MAX {
-                    ResourceLimit::ResourceLimitUnknown
+                    ResourceLimit::Unknown
                 } else if libc::RLIM_SAVED_CUR != libc::RLIM_INFINITY
                     && other == libc::RLIM_SAVED_CUR
                 {
-                    ResourceLimit::ResourceLimitUnknown
+                    ResourceLimit::Unknown
                 } else {
-                    ResourceLimit::ResourceLimit(other)
+                    ResourceLimit::Value(other)
                 }
             }
         };
@@ -53,39 +53,39 @@ impl From<libc::rlimit> for ResourceLimits {
 impl Into<libc::rlimit> for ResourceLimits {
     fn into(self: ResourceLimits) -> libc::rlimit {
         let rlim_cur = match self.soft_limit {
-            ResourceLimit::ResourceLimitInfinity => libc::RLIM_INFINITY,
-            ResourceLimit::ResourceLimitUnknown => libc::RLIM_SAVED_CUR,
-            ResourceLimit::ResourceLimit(n) => n,
+            ResourceLimit::Infinity => libc::RLIM_INFINITY,
+            ResourceLimit::Unknown => libc::RLIM_SAVED_CUR,
+            ResourceLimit::Value(n) => n,
         };
         let rlim_max = match self.hard_limit {
-            ResourceLimit::ResourceLimitInfinity => libc::RLIM_INFINITY,
-            ResourceLimit::ResourceLimitUnknown => libc::RLIM_SAVED_MAX,
-            ResourceLimit::ResourceLimit(n) => n,
+            ResourceLimit::Infinity => libc::RLIM_INFINITY,
+            ResourceLimit::Unknown => libc::RLIM_SAVED_MAX,
+            ResourceLimit::Value(n) => n,
         };
         libc::rlimit { rlim_cur, rlim_max }
     }
 }
 
 pub enum Resource {
-    ResourceCoreFileSize,
-    ResourceCPUTime,
-    ResourceDataSize,
-    ResourceFileSize,
-    ResourceOpenFiles,
-    ResourceStackSize,
-    ResourceTotalMemory,
+    CoreFileSize,
+    CPUTime,
+    DataSize,
+    FileSize,
+    OpenFiles,
+    StackSize,
+    TotalMemory,
 }
 
 impl Into<libc::__rlimit_resource_t> for Resource {
     fn into(self: Resource) -> libc::__rlimit_resource_t {
         match self {
-            Resource::ResourceCoreFileSize => libc::RLIMIT_CORE,
-            Resource::ResourceCPUTime => libc::RLIMIT_CPU,
-            Resource::ResourceDataSize => libc::RLIMIT_DATA,
-            Resource::ResourceFileSize => libc::RLIMIT_FSIZE,
-            Resource::ResourceOpenFiles => libc::RLIMIT_NOFILE,
-            Resource::ResourceStackSize => libc::RLIMIT_STACK,
-            Resource::ResourceTotalMemory => libc::RLIMIT_AS,
+            Resource::CoreFileSize => libc::RLIMIT_CORE,
+            Resource::CPUTime => libc::RLIMIT_CPU,
+            Resource::DataSize => libc::RLIMIT_DATA,
+            Resource::FileSize => libc::RLIMIT_FSIZE,
+            Resource::OpenFiles => libc::RLIMIT_NOFILE,
+            Resource::StackSize => libc::RLIMIT_STACK,
+            Resource::TotalMemory => libc::RLIMIT_AS,
         }
     }
 }
@@ -93,13 +93,13 @@ impl Into<libc::__rlimit_resource_t> for Resource {
 impl From<libc::__rlimit_resource_t> for Resource {
     fn from(r: libc::__rlimit_resource_t) -> Self {
         match r {
-            libc::RLIMIT_CORE => Resource::ResourceCoreFileSize,
-            libc::RLIMIT_CPU => Resource::ResourceCPUTime,
-            libc::RLIMIT_DATA => Resource::ResourceDataSize,
-            libc::RLIMIT_FSIZE => Resource::ResourceFileSize,
-            libc::RLIMIT_NOFILE => Resource::ResourceOpenFiles,
-            libc::RLIMIT_STACK => Resource::ResourceStackSize,
-            libc::RLIMIT_AS => Resource::ResourceTotalMemory,
+            libc::RLIMIT_CORE => Resource::CoreFileSize,
+            libc::RLIMIT_CPU => Resource::CPUTime,
+            libc::RLIMIT_DATA => Resource::DataSize,
+            libc::RLIMIT_FSIZE => Resource::FileSize,
+            libc::RLIMIT_NOFILE => Resource::OpenFiles,
+            libc::RLIMIT_STACK => Resource::StackSize,
+            libc::RLIMIT_AS => Resource::TotalMemory,
             _ => panic!("Invalid resource type code"),
         }
     }
