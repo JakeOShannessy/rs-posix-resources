@@ -3,6 +3,10 @@ name = "posix-resources"
 version = "0.1.0"
 authors = ["Jake O'Shannessy <joshannessy@gmail.com>"]
 edition = "2018"
+description = "Higher level bindings to POSIX resources via the libc crate."
+repository = "https://github.com/JakeOShannessy/rs-posix-resources.git"
+homepage = "https://github.com/JakeOShannessy/rs-posix-resources"
+license-file = "LICENSE"
 
 [dependencies]
 libc = "0.2"
