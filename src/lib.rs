@@ -29,7 +29,7 @@ impl From<libc::rlimit> for ResourceLimits {
                 }
             }
         };
-        let hard_limit = match rs.rlim_cur {
+        let hard_limit = match rs.rlim_max {
             libc::RLIM_INFINITY => ResourceLimit::ResourceLimitInfinity,
             other => {
                 if libc::RLIM_SAVED_MAX != libc::RLIM_INFINITY && other == libc::RLIM_SAVED_MAX {
