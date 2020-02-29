@@ -4,7 +4,7 @@ use libc;
 pub enum ResourceLimit {
     Infinity,
     Unknown,
-    Value(u64),
+    Value(libc::rlim_t),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
@@ -120,8 +120,8 @@ pub enum GetRLimitError {
 /// Get the limit values for a particular resource.
 pub fn get_resource_limit(resource: Resource) -> Result<ResourceLimits, GetRLimitError> {
     let mut rlimit: libc::rlimit = libc::rlimit {
-        rlim_cur: 0_u64,
-        rlim_max: 0_u64,
+        rlim_cur: 0,
+        rlim_max: 0,
     };
     unsafe {
         match libc::getrlimit(resource.into(), &mut rlimit) {
