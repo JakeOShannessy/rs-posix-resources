@@ -6,7 +6,7 @@ edition = "2018"
 description = "Higher level bindings to POSIX resources via the libc crate."
 repository = "https://github.com/JakeOShannessy/rs-posix-resources.git"
 homepage = "https://github.com/JakeOShannessy/rs-posix-resources"
-license-file = "LICENSE"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 libc = "0.2"
