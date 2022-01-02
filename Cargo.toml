@@ -1,8 +1,8 @@
 [package]
 name = "posix-resources"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Jake O'Shannessy <joshannessy@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "Higher level bindings to POSIX resources via the libc crate."
 repository = "https://github.com/JakeOShannessy/rs-posix-resources.git"
 homepage = "https://github.com/JakeOShannessy/rs-posix-resources"

@@ -117,6 +117,24 @@ pub enum GetRLimitError {
     Permission,
 }
 
+impl std::fmt::Display for GetRLimitError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            Self::Invalid => write!(f, "EINVAL"),
+            Self::Permission => write!(f, "EPERM"),
+        }
+    }
+}
+
+impl std::error::Error for GetRLimitError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match *self {
+            Self::Invalid => None,
+            Self::Permission => None,
+        }
+    }
+}
+
 /// Get the limit values for a particular resource.
 pub fn get_resource_limit(resource: Resource) -> Result<ResourceLimits, GetRLimitError> {
     let mut rlimit: libc::rlimit = libc::rlimit {
